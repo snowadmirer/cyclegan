@@ -179,6 +179,10 @@ class cyclegan(object):
 
                 if np.mod(counter, args.save_freq) == 2:
                     self.save(args.checkpoint_dir, counter)
+                
+            # test at each epoch
+            args.cur_epoch = epoch
+            self.test_in_train(args)
 
     def save(self, checkpoint_dir, step):
         model_name = "cyclegan.model"
@@ -223,6 +227,47 @@ class cyclegan(object):
                     './{}/A_{:02d}_{:04d}.jpg'.format(sample_dir, epoch, idx))
         save_images(fake_B, [self.batch_size, 1],
                     './{}/B_{:02d}_{:04d}.jpg'.format(sample_dir, epoch, idx))
+    
+    def test_in_train(self, args):
+        """Test cyclegan"""
+        if args.which_direction == 'AtoB':
+            sample_files = glob('./datasets/{}/*.*'.format(self.dataset_dir + '/testA'))
+        elif args.which_direction == 'BtoA':
+            sample_files = glob('./datasets/{}/*.*'.format(self.dataset_dir + '/testB'))
+        else:
+            raise Exception('--which_direction must be AtoB or BtoA')
+
+        if self.load(args.checkpoint_dir):
+            print(" [*] Load SUCCESS")
+        else:
+            print(" [!] Load failed...")
+
+        # write html for visual comparison
+        index_path = os.path.join(args.test_dir, '{0}_index.html'.format(args.which_direction))
+        index = open(index_path, "w")
+        index.write("<html><body><table><tr>")
+        index.write("<th>name</th><th>input</th><th>output</th></tr>")
+
+        out_var, in_var = (self.testB, self.test_A) if args.which_direction == 'AtoB' else (
+            self.testA, self.test_B)
+
+        for sample_file in sample_files:
+            print('Processing image: ' + sample_file)
+            sample_image = [load_test_data(sample_file, args.fine_size)]
+            sample_image = np.array(sample_image).astype(np.float32)
+            image_dir = os.path.join(args.test_dir, '{:03d}'.format(args.cur_epoch))
+            check_dir(image_dir)
+            image_path = os.path.join(image_dir, '{0}_{1}'.format(args.which_direction, os.path.basename(sample_file)))
+            fake_img = self.sess.run(out_var, feed_dict={in_var: sample_image})
+            fake_img = np.concatenate((sample_image, fake_img), axis=1)
+            save_images(fake_img, [1, 1], image_path)
+            index.write("<td>%s</td>" % os.path.basename(image_path))
+            index.write("<td><img src='%s'></td>" % (sample_file if os.path.isabs(sample_file) else (
+                '..' + os.path.sep + sample_file)))
+            index.write("<td><img src='%s'></td>" % (image_path if os.path.isabs(image_path) else (
+                '..' + os.path.sep + image_path)))
+            index.write("</tr>")
+        index.close()
 
     def test(self, args):
         """Test cyclegan"""

@@ -7,6 +7,7 @@ import pprint
 import scipy.misc
 import numpy as np
 import copy
+import os
 try:
     _imread = scipy.misc.imread
 except AttributeError:
@@ -123,3 +124,7 @@ def transform(image, npx=64, is_crop=True, resize_w=64):
 
 def inverse_transform(images):
     return (images+1.)/2.
+
+def check_dir(dirname):
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
