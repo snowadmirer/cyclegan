@@ -267,7 +267,7 @@ class cyclegan(object):
             index.write("</tr>")
         one_piece_img = np.concatenate(fake_imgs, axis=1)
         one_piece_img_path = os.path.join(args.test_dir, args.id_name, '{:03d}'.format(args.cur_epoch), 'one_piece.jpg')
-        save_images(fake_img, [1, 1], one_piece_img_path)
+        save_images(one_piece_img, [1, 1], one_piece_img_path)
         index.close()
 
     def test(self, args):
