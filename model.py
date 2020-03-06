@@ -251,7 +251,7 @@ class cyclegan(object):
 
         out_var, in_var = (self.testB, self.test_A) if args.which_direction == 'AtoB' else (
             self.testA, self.test_B)
-
+        fake_imgs = []
         for sample_file in sample_files:
             print('Processing image: ' + sample_file)
             sample_image = [load_test_data(sample_file, args.fine_size)]
@@ -260,7 +260,9 @@ class cyclegan(object):
             check_dir(image_dir)
             image_path = os.path.join(image_dir, '{0}_{1}'.format(args.which_direction, os.path.basename(sample_file)))
             fake_img = self.sess.run(out_var, feed_dict={in_var: sample_image})
+            fake_imgs.append(fake_img)
             fake_img = np.concatenate((sample_image, fake_img), axis=1)
+       
             save_images(fake_img, [1, 1], image_path)
             index.write("<td>%s</td>" % os.path.basename(image_path))
             index.write("<td><img src='%s'></td>" % (sample_file if os.path.isabs(sample_file) else (
@@ -268,6 +270,9 @@ class cyclegan(object):
             index.write("<td><img src='%s'></td>" % (image_path if os.path.isabs(image_path) else (
                 '..' + os.path.sep + image_path)))
             index.write("</tr>")
+           one_piece_img = np.concatenate(fake_imgs, aixs=1)
+           one_piece_img_path = os.path.join(args.test_dir, '{:03d}'.format(args.cur_epoch), 'one_piece.jpg')
+           save_images(fake_img, [1, 1], one_piece_img_path)
         index.close()
 
     def test(self, args):
