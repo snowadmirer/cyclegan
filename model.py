@@ -1,6 +1,6 @@
 from __future__ import division
 import os
-import time
+from datetime import datetime
 from glob import glob
 import tensorflow as tf
 import numpy as np
@@ -132,7 +132,7 @@ class cyclegan(object):
         self.writer = tf.summary.FileWriter("./logs", self.sess.graph)
 
         counter = 1
-        start_time = time.time()
+        start_time = datetime.now()
 
         if args.continue_train:
             if self.load(args.checkpoint_dir):
@@ -171,8 +171,8 @@ class cyclegan(object):
                 self.writer.add_summary(summary_str, counter)
 
                 counter += 1
-                print(("Epoch: [%2d] [%4d/%4d] time: %4.4f" % (
-                    epoch, idx, batch_idxs, time.time() - start_time)))
+                print(("Epoch: [%2d] [%4d/%4d] time: %s" % (
+                    epoch, idx, batch_idxs, datetime.now() - start_time)))
 
                 if np.mod(counter, args.print_freq) == 1:
                     self.sample_model(args.sample_dir, epoch, idx)
