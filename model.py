@@ -251,7 +251,7 @@ class cyclegan(object):
             print('Processing image: ' + sample_file)
             sample_image = [load_test_data(sample_file, args.fine_size)]
             sample_image = np.array(sample_image).astype(np.float32)
-            image_dir = os.path.join(args.test_dir, '{:03d}'.format(args.cur_epoch))
+            image_dir = os.path.join(args.test_dir, args.id_name, '{:03d}'.format(args.cur_epoch))
             check_dir(image_dir)
             image_path = os.path.join(image_dir, '{0}_{1}'.format(args.which_direction, os.path.basename(sample_file)))
             fake_img = self.sess.run(out_var, feed_dict={in_var: sample_image})
@@ -265,9 +265,9 @@ class cyclegan(object):
             index.write("<td><img src='%s'></td>" % (image_path if os.path.isabs(image_path) else (
                 '..' + os.path.sep + image_path)))
             index.write("</tr>")
-            one_piece_img = np.concatenate(fake_imgs, axis=1)
-            one_piece_img_path = os.path.join(args.test_dir, '{:03d}'.format(args.cur_epoch), 'one_piece.jpg')
-            save_images(fake_img, [1, 1], one_piece_img_path)
+        one_piece_img = np.concatenate(fake_imgs, axis=1)
+        one_piece_img_path = os.path.join(args.test_dir, args.id_name, '{:03d}'.format(args.cur_epoch), 'one_piece.jpg')
+        save_images(fake_img, [1, 1], one_piece_img_path)
         index.close()
 
     def test(self, args):
