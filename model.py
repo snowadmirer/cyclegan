@@ -175,7 +175,7 @@ class cyclegan(object):
                 self.writer.add_summary(summary_str, counter)
 
                 counter += 1
-                print(("Epoch: [%2d] g_loss: %4.4f d_loss: %4.4f [%4d/%4d] time: %s" % (
+                print(("Epoch: [%2d] [%4d/%4d]  g_loss: %4.4f d_loss: %4.4f time: %s" % (
                     epoch, idx, batch_idxs, g_loss_out, d_loss_out, datetime.now() - start_time)))
 
                 if np.mod(counter, args.print_freq) == 1:
