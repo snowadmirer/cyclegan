@@ -18,6 +18,7 @@ class cyclegan(object):
         self.input_c_dim = args.input_nc
         self.output_c_dim = args.output_nc
         self.L1_lambda = args.L1_lambda
+        self.L1_lambda_bg = args.L1_lambda_bg
         self.dataset_dir = args.dataset_dir
 
         self.discriminator = discriminator
@@ -58,16 +59,16 @@ class cyclegan(object):
         self.DA_fake = self.discriminator(self.fake_A, self.options, reuse=False, name="discriminatorA")
         self.g_loss_a2b = self.criterionGAN(self.DB_fake, tf.ones_like(self.DB_fake)) \
             + self.L1_lambda * abs_criterion(self.real_A, self.fake_A_) \
-            + self.L1_lambda * abs_criterion(self.real_B, self.fake_B_) \
-            + 0.5 * abs_criterion(self.real_A, self.fake_B)
+            + self.L1_lambda * abs_criterion(self.real_B, self.fake_B_)
         self.g_loss_b2a = self.criterionGAN(self.DA_fake, tf.ones_like(self.DA_fake)) \
             + self.L1_lambda * abs_criterion(self.real_A, self.fake_A_) \
-            + self.L1_lambda * abs_criterion(self.real_B, self.fake_B_) \
-            + 0.5 * abs_criterion(self.real_B, self.fake_A)
+            + self.L1_lambda * abs_criterion(self.real_B, self.fake_B_)
         self.g_loss = self.criterionGAN(self.DA_fake, tf.ones_like(self.DA_fake)) \
             + self.criterionGAN(self.DB_fake, tf.ones_like(self.DB_fake)) \
             + self.L1_lambda * abs_criterion(self.real_A, self.fake_A_) \
-            + self.L1_lambda * abs_criterion(self.real_B, self.fake_B_)
+            + self.L1_lambda * abs_criterion(self.real_B, self.fake_B_) \
+            + self.L1_lambda_bg * abs_criterion(self.real_A, self.fake_B) \
+            + self.L1_lambda_bg * abs_criterion(self.real_B, self.fake_A)
 
         self.fake_A_sample = tf.placeholder(tf.float32,
                                             [None, self.image_size, self.image_size,
