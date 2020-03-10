@@ -19,6 +19,7 @@ class cyclegan(object):
         self.output_c_dim = args.output_nc
         self.L1_lambda = args.L1_lambda
         self.L1_lambda_bg = args.L1_lambda_bg
+        self.L1_lambda_id = args.L1_lambda_id
         self.dataset_dir = args.dataset_dir
 
         self.discriminator = discriminator
