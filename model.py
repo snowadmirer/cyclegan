@@ -68,8 +68,10 @@ class cyclegan(object):
             + self.criterionGAN(self.DB_fake, tf.ones_like(self.DB_fake)) \
             + self.L1_lambda * abs_criterion(self.real_A, self.fake_A_) \
             + self.L1_lambda * abs_criterion(self.real_B, self.fake_B_) \
+            + self.L1_lambda_id * abs_criterion(self.real_A, self.real_A_) \
+            + self.L1_lambda_id * abs_criterion(self.real_B, self.real_B_) \
             + self.L1_lambda_bg * abs_criterion(self.real_A, self.fake_B) \
-            + self.L1_lambda_bg * abs_criterion(self.real_B, self.fake_A)
+            + self.L1_lambda_bg * abs_criterion(self.real_B, self.fake_A) 
 
         self.fake_A_sample = tf.placeholder(tf.float32,
                                             [None, self.image_size, self.image_size,
