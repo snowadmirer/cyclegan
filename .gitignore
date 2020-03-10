@@ -5,4 +5,5 @@ checkpoint/*
 datasets/*
 test/*
 sample/*
+imgs/*
 train.sh
