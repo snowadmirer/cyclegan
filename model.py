@@ -155,15 +155,15 @@ class cyclegan(object):
                 batch_images = np.array(batch_images).astype(np.float32)
 
                 # Update G network and record fake outputs
-                fake_A, fake_B, _, summary_str = self.sess.run(
-                    [self.fake_A, self.fake_B, self.g_optim, self.g_sum],
+                fake_A, fake_B, _, summary_str, g_loss_out = self.sess.run(
+                    [self.fake_A, self.fake_B, self.g_optim, self.g_sum, self.g_loss],
                     feed_dict={self.real_data: batch_images, self.lr: lr})
                 self.writer.add_summary(summary_str, counter)
                 [fake_A, fake_B] = self.pool([fake_A, fake_B])
 
                 # Update D network
-                _, summary_str = self.sess.run(
-                    [self.d_optim, self.d_sum],
+                _, summary_str, d_loss_out = self.sess.run(
+                    [self.d_optim, self.d_sum, self.d_loss],
                     feed_dict={self.real_data: batch_images,
                                self.fake_A_sample: fake_A,
                                self.fake_B_sample: fake_B,
@@ -171,8 +171,8 @@ class cyclegan(object):
                 self.writer.add_summary(summary_str, counter)
 
                 counter += 1
-                print(("Epoch: [%2d] [%4d/%4d] time: %s" % (
-                    epoch, idx, batch_idxs, datetime.now() - start_time)))
+                print(("Epoch: [%2d] g_loss: %4.4f d_loss: %4.4f [%4d/%4d] time: %s" % (
+                    epoch, idx, batch_idxs, g_loss_out, d_loss_out, datetime.now() - start_time)))
 
                 if np.mod(counter, args.print_freq) == 1:
                     self.sample_model(args.sample_dir, epoch, idx)
