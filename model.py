@@ -144,6 +144,9 @@ class cyclegan(object):
             else:
                 print(" [!] Load failed...")
 
+        args.cur_epoch = 0
+        print('Testing ...')
+        self.test_in_train(args)
         for epoch in range(args.epoch):
             dataA = glob(os.path.join(self.dataset_dir, 'trainA') + '/*.*')
             dataB = glob(os.path.join(self.dataset_dir, 'trainB') + '/*.*')
@@ -185,7 +188,7 @@ class cyclegan(object):
                     self.save(args.checkpoint_dir, counter)
                 
             # test at each epoch
-            args.cur_epoch = epoch
+            args.cur_epoch = epoch + 1
             print('Testing ...')
             self.test_in_train(args)
 
