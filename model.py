@@ -269,8 +269,9 @@ class cyclegan(object):
             index.write("<td><img src='%s'></td>" % (image_path if os.path.isabs(image_path) else (
                 '..' + os.path.sep + image_path)))
             index.write("</tr>")
+        image_dir = os.path.join(args.test_dir, args.id_name, '{:03d}'.format(args.cur_epoch))
         one_piece_img = np.concatenate(fake_imgs, axis=1)
-        one_piece_img_path = os.path.join(args.test_dir, args.id_name, '{:03d}'.format(args.cur_epoch), 'one_piece.jpg')
+        one_piece_img_path = os.path.join(image_dir, 'one_piece.jpg')
         save_images(one_piece_img, [1, 1], one_piece_img_path)
         index.close()
 
